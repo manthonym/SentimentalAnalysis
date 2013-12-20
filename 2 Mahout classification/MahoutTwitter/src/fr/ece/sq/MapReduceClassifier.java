@@ -46,24 +46,6 @@ public class MapReduceClassifier {
 
 		public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 			String line = value.toString();
-			/*
-			String[] tokens = line.split("\t", 2);
-			if (tokens.length < 2) {
-				return;
-			}
-			String tweetId = tokens[0];
-			String tweet = tokens[1];
-	
-			int bestCategoryId = classifier.classify(tweet);
-			outputValue.set(bestCategoryId);
-	
-			outputKey.set(tweetId);
-			context.write(outputKey, outputValue);
-			int bestCategoryId = classifier.classify(line);
-			outputValue.set(bestCategoryId);
-	
-			outputKey.set(line);
-			*/
 			
 			JSONObject json = new JSONObject(line);
 			System.out.println(json.toString());
@@ -74,7 +56,7 @@ public class MapReduceClassifier {
 			int bestCategoryId = classifier.classify(tweet);
 			
 			Configuration configuration = new Configuration();
-			String labelIndexPath = "/tmp/mahout-work-root/labelindex";
+			String labelIndexPath = "/tmp/mahout-work-apple-root/labelindex";
 			
 			Map<Integer, String> labels = BayesUtils.readLabelIndex(configuration, new Path(labelIndexPath));
 			
@@ -83,12 +65,8 @@ public class MapReduceClassifier {
 			/**
 			 * Check if this tweet talks about electricity
 			 */
-			if(labels.get(bestCategoryId).equalsIgnoreCase("electricity")){			
+			if(labels.get(bestCategoryId).equalsIgnoreCase("computer")){			
 			outputKey.set(line);
-			//outputValue.set(bestCategoryId);		
-			
-			
-			//context.write(outputKey, outputValue);
 			context.write(outputKey, NullWritable.get());
 			}
 		}
